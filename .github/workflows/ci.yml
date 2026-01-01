@@ -17,10 +17,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Installation des dépendances
-        run: npm ci
+        run: npm install
 
       - name: Vérification Lint
         run: npm run lint
@@ -37,20 +36,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Installation des dépendances
-        run: npm ci
+        run: npm install
 
       - name: Lancement des tests
         run: npm run test
 
-  # --- JOB 3 : BUILD (only main and develop) ---
+  # --- JOB 3 : BUILD ---
   build:
     name: Build Application
     runs-on: ubuntu-latest
     needs: [lint, test]
-    # Condition to build only on main and develop
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     steps:
       - name: Récupération du code
@@ -60,10 +57,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Installation des dépendances
-        run: npm ci
+        run: npm install
 
       - name: Compilation (Build)
         run: npm run build
