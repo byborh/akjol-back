@@ -1,0 +1,75 @@
+name: Node CI/CD
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # --- JOB 1 : LINT (for everyone) ---
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Installation des dépendances
+        run: yarn install --frozen-lockfile
+
+      - name: Vérification Lint
+        run: yarn lint
+
+  # --- JOB 2 : TEST (for everyone) ---
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Installation des dépendances
+        run: yarn install --frozen-lockfile
+
+      - name: Lancement des tests
+        run: yarn test
+
+  # --- JOB 3 : BUILD (Only on main and develop) ---
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Installation Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Installation des dépendances
+        run: yarn install --frozen-lockfile
+
+      - name: Compilation (Build)
+        run: yarn build
+
+      - name: Sauvegarde de l'artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: dist/
+          retention-days: 30
