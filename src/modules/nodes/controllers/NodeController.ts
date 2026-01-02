@@ -47,23 +47,19 @@ export class NodeController {
             const idGenerator = IdGenerator.getInstance();
             const nodeId: string = idGenerator.generateId();
 
-            const node: NodeAbstract = ({
-                id: nodeId,
-                email,
-                password,
-                salt: "", // À gérer correctement
-                firstname,
-                lastname,
-                pseudo,
-                telnumber,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+            // const node: NodeAbstract = ({
+            //     id: nodeId,
+            //     type: "UserNode",
+            //     title: "",
+            //     slug: "",
+            //     metadata: {},
+            //     description: "",
+            //     createdAt: new Date(),
+            //     updatedAt: new Date(),
 
-                stripeCustomerId: null,
-                paypalCustomerId: null
-            } as NodeAbstract);
+            // } as NodeAbstract);
             
-            const createdNode = await this.nodeService.createNode(node);
+            const createdNode = await this.nodeService.createNode(x as NodeAbstract);
 
             if (!createdNode) {
                 res.status(400).json({ error: "Node could not be created." });

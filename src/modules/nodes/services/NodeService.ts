@@ -1,17 +1,10 @@
 import { NodeDTO } from "../dto/NodeDTO";
 import { NodeMapper } from "../mapper/NodeMapper";
 import { PasswordManager } from "@core/cryptography/PasswordManager";
-import { AuthTokenRepositorySQL } from "@modules/auth-token/repositories/drivers/AuthTokenRepositorySQL";
-import { CreateToken } from "@core/auth/createToken";
 import { getDatabase } from "@db/DatabaseClient";
 import { INodeRepository } from "../repositories/contract/INodeRepository";
-import { getRepository } from "@core/db/databaseGuards";
-import { IAuthTokenRepository } from "@modules/auth-token/repositories/contract/IAuthTokenRepository";
-import { AuthTokenRepositoryRedis } from "@modules/auth-token/repositories/drivers/AuthTokenRepositoryRedis";
 import { NodeAbstract } from "../entity/Node.abstract";
-import { AuthTokenAbstract } from "@modules/auth-token/entity/AuthToken.abstract";
 import { createNodeEntity } from "../entity/Node.factory";
-import { AuthTokenRepositoryMongo } from "@modules/auth-token/repositories/drivers/AuthTokenRepositoryMongo";
 import _ from "lodash";
 
 
@@ -52,7 +45,7 @@ export class NodeService {
             if (!email) throw new Error("Email is required.");
 
             // Call NodeRepository to find a node by email
-            const nodeEntity: NodeAbstract = await this.nodeRepository.findNodeByEmail(email);
+            const nodeEntity: NodeAbstract = await this.nodeRepository.findNodeBySlug(email);
 
             // If no node is found, return null
             if (!nodeEntity) {
@@ -94,7 +87,7 @@ export class NodeService {
             const nodeEntity = await createNodeEntity(node);
 
             // Verify if node exists
-            const localNode: NodeAbstract | null = await this.nodeRepository.findNodeByEmail(nodeEntity.email);
+            const localNode: NodeAbstract | null = await this.nodeRepository.findNodeBySlug(nodeEntity.slug);
             if (localNode) {
                 console.error("Node already exists:", localNode);
                 throw new Error("Node already exists.");
@@ -107,14 +100,14 @@ export class NodeService {
             const salt: string = passwordManager.generateSalt();
 
             // Creation of hashed password
-            const hashedPassword: string = passwordManager.hashPassword(nodeEntity.password, salt);
+            const hashedPassword: string = passwordManager.hashPassword(nodeEntity.slug, salt);
 
             // Verification of password
             // const isPasswordValid: boolean = passwordManager.verifyPassword(nodeEntity.password, salt, hashedPassword); // IL N'EST PAS UTILISE ???
 
             // Assign hashed password to node
-            nodeEntity.setPassword(hashedPassword);
-            nodeEntity.setSalt(salt);
+            nodeEntity.setSlug(hashedPassword);
+            nodeEntity.setSlug(salt);
 
             // Create node from repository
             const createdNode: NodeAbstract | null = await this.nodeRepository.createNode(nodeEntity);
@@ -172,46 +165,46 @@ export class NodeService {
             let hasChanges: boolean = false;
     
             // Compare fields and update if necessary
-            if (nodeEntity.email && nodeEntity.email !== existingNodeEntity.email) {
-                existingNodeEntity.setEmail(nodeEntity.email);
-                hasChanges = true;
-            }
+            // if (nodeEntity.email && nodeEntity.email !== existingNodeEntity.email) {
+            //     existingNodeEntity.setEmail(nodeEntity.email);
+            //     hasChanges = true;
+            // }
     
-            if (nodeEntity.firstname && nodeEntity.firstname !== existingNodeEntity.firstname) {
-                existingNodeEntity.setFirstname(nodeEntity.firstname);
-                hasChanges = true;
-            }
+            // if (nodeEntity.firstname && nodeEntity.firstname !== existingNodeEntity.firstname) {
+            //     existingNodeEntity.setFirstname(nodeEntity.firstname);
+            //     hasChanges = true;
+            // }
     
-            if (nodeEntity.lastname && nodeEntity.lastname !== existingNodeEntity.lastname) {
-                existingNodeEntity.setLastname(nodeEntity.lastname);
-                hasChanges = true;
-            }
+            // if (nodeEntity.lastname && nodeEntity.lastname !== existingNodeEntity.lastname) {
+            //     existingNodeEntity.setLastname(nodeEntity.lastname);
+            //     hasChanges = true;
+            // }
     
-            if (nodeEntity.pseudo && nodeEntity.pseudo !== existingNodeEntity.pseudo) {
-                existingNodeEntity.setPseudo(nodeEntity.pseudo);
-                hasChanges = true;
-            }
+            // if (nodeEntity.pseudo && nodeEntity.pseudo !== existingNodeEntity.pseudo) {
+            //     existingNodeEntity.setPseudo(nodeEntity.pseudo);
+            //     hasChanges = true;
+            // }
     
-            if (nodeEntity.telnumber && nodeEntity.telnumber !== existingNodeEntity.telnumber) {
-                existingNodeEntity.setTelnumber(nodeEntity.telnumber);
-                hasChanges = true;
-            }
+            // if (nodeEntity.telnumber && nodeEntity.telnumber !== existingNodeEntity.telnumber) {
+            //     existingNodeEntity.setTelnumber(nodeEntity.telnumber);
+            //     hasChanges = true;
+            // }
     
             // Verify password
-            if (nodeEntity.password) {
+            if (nodeEntity.slug) {
                 const passwordManager = PasswordManager.getInstance();
                 const isPasswordValid: boolean = passwordManager.verifyPassword(
-                    nodeEntity.password,
-                    existingNodeEntity.salt,
-                    existingNodeEntity.password
+                    nodeEntity.slug,
+                    existingNodeEntity.slug,
+                    existingNodeEntity.slug
                 );
     
                 // If password is different
                 if (!isPasswordValid) {
                     const newSalt = passwordManager.generateSalt();
-                    const hashedPassword = passwordManager.hashPassword(nodeEntity.password, newSalt);
-                    existingNodeEntity.setSalt(newSalt);
-                    existingNodeEntity.setPassword(hashedPassword);
+                    const hashedPassword = passwordManager.hashPassword(nodeEntity.slug, newSalt);
+                    existingNodeEntity.setSlug(newSalt);
+                    existingNodeEntity.setSlug(hashedPassword);
                     hasChanges = true;
                 }
             }
