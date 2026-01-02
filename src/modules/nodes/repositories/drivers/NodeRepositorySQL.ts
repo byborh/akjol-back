@@ -3,6 +3,7 @@ import { INodeRepository } from "../contract/INodeRepository";
 import { Repository } from "typeorm";
 import { IDatabase } from "@db/contract/IDatabase";
 import { SQLDatabase } from "@db/drivers/sql.datasource";
+import { NodeAbstract } from "@modules/nodes/entity/Node.abstract";
 
 export class NodeRepositorySQL implements INodeRepository {
     private repository: Repository<NodeSQLEntity>;
@@ -10,6 +11,18 @@ export class NodeRepositorySQL implements INodeRepository {
     constructor(private db: IDatabase) {
         const dataSource = db as SQLDatabase;
         this.repository = dataSource.getDataSource().getRepository(NodeSQLEntity);
+    }
+
+    findNextNodesById(id: string): Promise<Array<NodeAbstract> | null> {
+        throw new Error("Method not implemented.");
+    }
+
+    findNodeBySlug(slug: string): Promise<NodeAbstract | null> {
+        throw new Error("Method not implemented.");
+    }
+    
+    findPreviousNodesById(id: string): Promise<Array<NodeAbstract> | null> {
+        throw new Error("Method not implemented.");
     }
 
     async findNodeByField(field: string, value: string): Promise<NodeSQLEntity | null> {
@@ -38,41 +51,6 @@ export class NodeRepositorySQL implements INodeRepository {
     async findNodeById(nodeId: string): Promise<NodeSQLEntity | null> {
         if(!nodeId) return null;
         return await this.findNodeByField('id', nodeId) || null;
-    }
-
-    async findNodeByEmail(email: string): Promise<NodeSQLEntity | null> {
-        if(!email) return null;
-        return await this.findNodeByField('email', email) || null;
-    }
-
-    /**
-     * Retrieves a node from the database based on multiple fields and their corresponding values.
-     * This method is useful when you need to find a node using a combination of fields (e.g., email and nodename, or firstName and lastName).
-     * 
-     * @param fields - An array of field names (e.g., ['email', 'nodename']) to search by.
-     * @param values - An array of values (e.g., ['test@example.com', 'john_doe']) corresponding to the fields.
-     * 
-     * @returns A Promise that resolves to the found NodeSQLEntity object if a match is found, or null if no node matches the conditions.
-     * 
-     * @example useage :
-     * const node = await getNodeByMultipleFields(['email', 'nodename'], ['test@example.com', 'john_doe']);
-     * 
-     * @throws This method does not throw errors directly, but the underlying repository might throw errors
-     * if there are issues with the database connection or query execution.
-     */
-    async getNodeByMultipleFields(fields: string[], values: string[]): Promise<NodeSQLEntity | null> {
-        // Validate fields
-        if (fields.length !== values.length || fields.length === 0 || values.length === 0) return null;
-
-        const conditions: any = {};
-
-        // Build conditions
-        fields.forEach((field, index) => {
-            conditions[field] = values[index];
-        })
-
-        // Find node
-        return await this.repository.findOne({where: conditions}) || null;
     }
 
     async getAllNodes(): Promise<NodeSQLEntity[]> {

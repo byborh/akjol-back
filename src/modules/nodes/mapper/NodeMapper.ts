@@ -36,17 +36,13 @@ export class NodeMapper {
 
         return ({
             id: dto.id,
-            email: dto.email,
-            password: existingNode.password, // Let password unchanged
-            salt: existingNode.salt, // Let salt unchanged
-            firstname: dto.firstname || null,
-            lastname: dto.lastname || null,
-            pseudo: dto.pseudo || null,
-            telnumber: dto.telnumber || null,
+            type: dto.type,
+            title: dto.title,
+            slug: dto.slug,
+            description: dto.description,
+            metadata: dto.metadata,
             createdAt: dto.createdAt,
             updatedAt: dto.updatedAt,
-            stripeCustomerId: dto.stripeCustomerId || null,
-            paypalCustomerId: dto.paypalCustomerId || null
         } as NodeAbstract);
     }
 
@@ -63,17 +59,13 @@ export class NodeMapper {
         
         return new NodeRedisEntity({
             id: nodeDTO.id,
-            email: nodeDTO.email,
-            password: existingNode.password, // Let password unchanged
-            salt: existingNode.salt, // Let salt unchanged
-            firstname: nodeDTO.firstname || null,
-            lastname: nodeDTO.lastname || null,
-            pseudo: nodeDTO.pseudo || null,
-            telnumber: nodeDTO.telnumber || null,
+            type: nodeDTO.type,
+            title: nodeDTO.title,
+            slug: nodeDTO.slug,
+            description: nodeDTO.description,
+            metadata: nodeDTO.metadata,
             createdAt: nodeDTO.createdAt,
             updatedAt: nodeDTO.updatedAt,
-            stripeCustomerId: nodeDTO.stripeCustomerId || null,
-            paypalCustomerId: nodeDTO.paypalCustomerId || null
         });
     }
 
