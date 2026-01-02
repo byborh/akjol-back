@@ -1,0 +1,12 @@
+export interface NodeDTO  {
+    id: string;
+    firstname: string;
+    lastname: string;
+    pseudo: string;
+    email: string;
+    telnumber: string;
+    createdAt: Date;
+    updatedAt: Date;
+    stripeCustomerId: string;
+    paypalCustomerId: string
+}

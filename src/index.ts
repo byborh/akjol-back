@@ -11,6 +11,7 @@ import { getDatabase } from '@db/DatabaseClient';
 import { createTransactionModule } from '@modules/payment/modules/transaction';
 import { createRefundModule } from '@modules/payment/modules/refund';
 import { createInvoiceModule } from '@modules/payment/modules/invoice';
+import { createNodeModule } from '@modules/nodes';
 
 
 const app = express();
@@ -31,8 +32,7 @@ async function loadModules() {
   const userRolesModule = await createUserRolesModule();
   const authTokenModule = await createAuthTokenModule();
   const chatAIModule = await createChatAIModule();
-  // Add other modules HERE
-
+  const nodeModule = await createNodeModule();
   const transactionModule = await createTransactionModule();
   const refundModule = await createRefundModule();
   const invoiceModule = await createInvoiceModule();
@@ -45,7 +45,8 @@ async function loadModules() {
     chatAIModule,
     transactionModule,
     refundModule,
-    invoiceModule
+    invoiceModule,
+    nodeModule,
   };
 }
 
@@ -71,6 +72,7 @@ async function startServer() {
     apiRouter.use('/transactions', modules.transactionModule);
     apiRouter.use('/refunds', modules.refundModule);
     apiRouter.use('/invoices', modules.invoiceModule);
+    apiRouter.use('/nodes', modules.nodeModule);
 
     app.use('/api/v0.0.2', apiRouter);
 
