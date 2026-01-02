@@ -1,11 +1,15 @@
+import { TType } from "../contracts/TType";
+
 // DTO for updating functions, all fields are optional ! like this : email?: string etc
 export interface UserUpdateDTO {
     id?: string;
-    firstname?: string;
-    lastname?: string;
-    pseudo?: string;
-    email?: string;
-    telnumber?: string;
+    type?: TType;
+    title?: string;
+    slug?: string;
+    description?: string;
+    metadata?: {
+        [key: string]: any;
+    };
     createdAt?: Date;
     updatedAt?: Date;
 }

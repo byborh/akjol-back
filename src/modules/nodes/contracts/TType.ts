@@ -1,0 +1,1 @@
+export type TType = 'DIPLOME' | 'ECOLE' | 'METIER' | 'CERTIF' | 'FORMATION' | 'UNDEFINED'; // others can be added as needed

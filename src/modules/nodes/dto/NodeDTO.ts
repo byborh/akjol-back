@@ -1,12 +1,14 @@
+import { TType } from "../contracts/TType";
+
 export interface NodeDTO  {
     id: string;
-    firstname: string;
-    lastname: string;
-    pseudo: string;
-    email: string;
-    telnumber: string;
+    type: TType;
+    title: string;
+    slug: string;
+    description: string;
+    metadata: {
+        [key: string]: any;
+    };
     createdAt: Date;
     updatedAt: Date;
-    stripeCustomerId: string;
-    paypalCustomerId: string
 }

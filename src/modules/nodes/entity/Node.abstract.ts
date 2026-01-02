@@ -1,79 +1,88 @@
 import { NodeContract } from "../contracts/INode";
+import { TType } from "../contracts/TType";
 import { NodeDTO } from "../dto/NodeDTO";
 
 export abstract class NodeAbstract implements NodeContract {
     id: string;
-    firstname?: string;
-    lastname?: string;
-    pseudo?: string;
-    email: string;
-    password: string;
-    salt: string;
-    telnumber?: string;
     createdAt: Date;
     updatedAt: Date;
-
-    stripeCustomerId?: string; // Optional
-    paypalCustomerId?: string; // Optional
+    type: TType;
+    title: string;
+    slug: string;
+    description: string;
+    metadata: { [key: string]: any; };
     
     constructor(
         id: string,
-        email: string,
-        password: string,
-        salt: string,
-        firstname?: string,
-        lastname?: string,
-        pseudo?: string,
-        telnumber?: string,
+        type: TType,
+        title: string,
+        slug: string,
+        description: string,
+        metadata: { [key: string]: any; },
         createdAt?: Date,
-        updatedAt?: Date,
-
-        stripeCustomerId?: string,
-        paypalCustomerId?: string
+        updatedAt?: Date
     )
     {
         this.id = id;
-        this.email = email;
-        this.password = password;
-        this.salt = salt;
-        this.createdAt = createdAt || new Date(); // à corriger
-        this.updatedAt = updatedAt || new Date(); // à corriger
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.pseudo = pseudo;
-        this.telnumber = telnumber;
-
-        this.stripeCustomerId = stripeCustomerId,
-        this.paypalCustomerId = paypalCustomerId
+        this.type = type;
+        this.title = title;
+        this.slug = slug;
+        this.description = description;
+        this.metadata = metadata;
+        this.createdAt = createdAt ? createdAt : new Date();
+        this.updatedAt = updatedAt ? updatedAt : new Date();
     }
 
-    getId(): string {return this.id;}
-    getFirstname(): string | null {return this.firstname;}
-    getLastname(): string | null {return this.lastname;}
-    getPseudo(): string | null {return this.pseudo;}
-    getEmail(): string {return this.email;}
-    getPassword(): string {return this.password;}
-    getSalt(): string {return this.salt;}
-    getTelnumber(): string | null {return this.telnumber;}
-    getCreatedAt(): Date {return this.createdAt;}
-    getUpdatedAt(): Date {return this.updatedAt;}
+    getId(): string {
+        return this.id;
+    }
+    getType(): TType {
+        return this.type;
+    }
+    getTitle(): string {
+        return this.title;
+    }
+    getSlug(): string {
+        return this.slug;
+    }
+    getDescription(): string {
+        return this.description;
+    }
+    getMetadata(): { [key: string]: any; } {
+        return this.metadata;
+    }
+    getCreatedAt(): Date {
+        return this.createdAt;
+    }
+    getUpdatedAt(): Date {
+        return this.updatedAt;
+    }
 
-    getStripeCustomerId(): string | null {return this.stripeCustomerId;}
-    getPaypalCustomerId(): string | null {return this.paypalCustomerId;}
 
-    setId(id: string): void {this.id = id;}
-    setFirstname(firstname: string): void {this.firstname = firstname;}
-    setLastname(lastname: string): void {this.lastname = lastname;}
-    setPseudo(pseudo: string): void {this.pseudo = pseudo;}
-    setEmail(email: string): void {this.email = email;}
-    setPassword(password: string): void {this.password = password;}
-    setSalt(salt: string): void {this.salt = salt;}
-    setTelnumber(telnumber: string): void {this.telnumber = telnumber;}
-    setCreatedAt(createdAt: Date): void {this.createdAt = createdAt;}
-    setUpdatedAt(updatedAt: Date): void {this.updatedAt = updatedAt;}
-
-    setStripeCustomerId(stripeCustomerId: string): void {this.stripeCustomerId = stripeCustomerId;}
-    setPaypalCustomerId(paypalCustomerId: string): void {this.paypalCustomerId = paypalCustomerId;}
+    setId(id: string): void {
+        this.id = id;
+    }
+    setType(type: TType): void {
+        this.type = type;
+    }
+    setTitle(title: string): void {
+        this.title = title;
+    }
+    setSlug(slug: string): void {
+        this.slug = slug;
+    }
+    setDescription(description: string): void {
+        this.description = description;
+    }
+    setMetadata(metadata: { [key: string]: any; }): void {
+        this.metadata = metadata;
+    }
+    setCreatedAt(createdAt: Date): void {
+        this.createdAt = createdAt;
+    }
+    setUpdatedAt(updatedAt: Date): void {
+        this.updatedAt = updatedAt;
+    }
 
     abstract toDto(): NodeDTO;
 }

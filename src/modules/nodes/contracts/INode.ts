@@ -1,20 +1,32 @@
 import { NodeDTO } from "../dto/NodeDTO";
+import { TType } from "./TType";
 
 // Interface of the node
 export interface NodeContract {
     id: string;
-    firstname?: string;
-    lastname?: string;
-    pseudo?: string;
-    email: string;
-    password: string;
-    salt: string;
-    telnumber?: string;
+    type: TType;
+    title: string;
+    slug: string;
+    description: string;
+    metadata: {
+        [key: string]: any;
+    };
     createdAt: Date;
     updatedAt: Date;
 
-    stripeCustomerId?: string; // Optional
-    paypalCustomerId?: string; // Optional
-
+    // todo: let it ?
     toDto(): NodeDTO;
 }
+
+/*
+    Example of possible metadata structure:
+
+    data: {
+        salary_min?: number;    // Pour les Jobs
+        salary_max?: number;    // Pour les Jobs
+        duration_years?: number;// Pour les études
+        school_type?: string;   // 'Public', 'Privé'
+        tags?: string[];        // ['Informatique', 'Réseau']
+    };
+
+*/

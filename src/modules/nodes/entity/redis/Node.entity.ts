@@ -1,124 +1,72 @@
 import { NodeDTO } from '@modules/nodes/dto/NodeDTO';
 import { NodeAbstract } from '../Node.abstract';
 import { NodeContract } from '@modules/nodes/contracts/INode';
+import { TType } from '@modules/nodes/contracts/TType';
 
 export class NodeRedisEntity extends NodeAbstract {
     id: string;
-    firstname?: string | null;
-    lastname?: string | null;
-    pseudo?: string | null;
-    email: string;
-    password: string;
-    telnumber?: string | null;
-    salt: string;
+    type: TType;
+    title: string;
+    slug: string;
+    description: string;
+    metadata: { [key: string]: any; };
     createdAt: Date;
     updatedAt: Date;
 
-    stripeCustomerId?: string;
-    paypalCustomerId?: string;
-
-    data: Record<string, any> | null;
 
     constructor(data: Partial<NodeContract>) {
-        super(data.id!, data.email, data.password, data.salt, data.firstname, data.lastname, data.pseudo, data.telnumber, data.createdAt, data.updatedAt, data.stripeCustomerId, data.paypalCustomerId);
+        super(data.id!, data.type!, data.title!, data.slug!, data.description!, data.metadata!, data.createdAt, data.updatedAt);
 
         this.id = data.id!;
-        this.email = data.email!;
-        this.password = data.password!;
-        this.salt = data.salt!;
-        this.firstname = data.firstname ?? null;
-        this.lastname = data.lastname ?? null;
-        this.pseudo = data.pseudo ?? null;
-        this.telnumber = data.telnumber ?? null;
+        this.type = data.type!;
+        this.title = data.title!;
+        this.slug = data.slug!;
+        this.description = data.description!;
+        this.metadata = data.metadata!;
         this.createdAt = data.createdAt ?? new Date();
         this.updatedAt = data.updatedAt ?? new Date();
-
-        this.stripeCustomerId = data.stripeCustomerId ?? null;
-        this.paypalCustomerId = data.paypalCustomerId ?? null
     }
-
-    // constructor(data: Partial<NodeRedisEntity>) {
-    //     Object.assign(this, data); // il faut commenter pour comprendre ce que c'est
-    // }
-
 
     // Convert object to Redis hash
     toRedisHash(): { [key: string]: string } {
         return {
             id: this.id,
-            email: this.email,
-            password: this.password,
-            salt: this.salt,
+            type: this.type,
+            title: this.title,
+            slug: this.slug,
+            description: this.description,
+            metadata: JSON.stringify(this.metadata),
             createdAt: this.createdAt.toISOString(),
-            updatedAt: this.updatedAt.toISOString(),
-            firstname: this.firstname ?? "",
-            lastname: this.lastname ?? "",
-            pseudo: this.pseudo ?? "",
-            telnumber: this.telnumber ?? "",
-            stripeCustomerId: this.stripeCustomerId ?? "",
-            paypalCustomerId: this.paypalCustomerId ?? ""
+            updatedAt: this.updatedAt.toISOString()
         };
-    }
+    };
 
 
     // Convert Redis hash to object
     static fromRedisHash(hash: { [key: string]: string }): NodeRedisEntity {
         return new NodeRedisEntity({
             id: hash.id,
-            email: hash.email,
-            password: hash.password,
-            salt: hash.salt,
+            type: hash.type as TType,
+            title: hash.title,
+            slug: hash.slug,
+            description: hash.description,
+            metadata: JSON.parse(hash.metadata),
             createdAt: hash.createdAt ? new Date(hash.createdAt) : new Date(),
             updatedAt: hash.updatedAt ? new Date(hash.updatedAt) : new Date(),
-            firstname: hash.firstname || null,
-            lastname: hash.lastname || null,
-            pseudo: hash.pseudo || null,
-            telnumber: hash.telnumber || null,
-            stripeCustomerId: hash.stripeCustomerId || null,
-            paypalCustomerId: hash.paypalCustomerId || null
+            
         });
     }
-
-    // getId(): string {return this.id;}
-    // getFirstname(): string | null {return this.firstname;}
-    // getLastname(): string | null {return this.lastname;}
-    // getPseudo(): string | null {return this.pseudo;}
-    // getEmail(): string {return this.email;}
-    // getPassword(): string {return this.password;}
-    // getTelnumber(): string | null {return this.telnumber;}
-    // getSalt(): string | null {return this.salt;}
-    // getCreatedAt(): Date {return this.createdAt;}
-    // getUpdatedAt(): Date {return this.updatedAt;}
-
-    // getStripeCustomerId(): string | null {return this.stripeCustomerId;}
-    // getPaypalCustomerId(): string | null {return this.paypalCustomerId;}
-    
-    // setId(id: string): void {this.id = id;}
-    // setFirstname(firstname: string): void {this.firstname = firstname;}
-    // setLastname(lastname: string): void {this.lastname = lastname;}
-    // setPseudo(pseudo: string): void {this.pseudo = pseudo;}
-    // setEmail(email: string): void {this.email = email;}
-    // setPassword(password: string): void {this.password = password;}
-    // setTelnumber(telnumber: string): void {this.telnumber = telnumber;}
-    // setSalt(salt: string): void {this.salt = salt;}
-    // setCreatedAt(date: Date): void {this.createdAt = date;}
-    // setUpdatedAt(date: Date): void {this.updatedAt = date;}
-
-    // setStripeCustomerId(stripeCustomerId: string): void {this.stripeCustomerId = stripeCustomerId;}
-    // setPaypalCustomerId(paypalCustomerId: string): void {this.paypalCustomerId = paypalCustomerId;}
 
     toDto(): NodeDTO {
         return {
             id: this.id,
-            email: this.email,
-            firstname: this.firstname || null,
-            lastname: this.lastname || null,
-            pseudo: this.pseudo || null,
-            telnumber: this.telnumber || null,
+            type: this.type,
+            title: this.title,
+            slug: this.slug,
+            description: this.description,
+            metadata: this.metadata,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt,
-            stripeCustomerId: this.stripeCustomerId || null,
-            paypalCustomerId: this.paypalCustomerId || null
         }
     }
 }
